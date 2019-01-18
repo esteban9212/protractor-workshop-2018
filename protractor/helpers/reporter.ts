@@ -7,4 +7,3 @@ export let reporter = () => {
     }
   }));
 };
-
