@@ -1,14 +1,22 @@
-import { $, ElementFinder } from 'protractor';
+import { ElementFinder, ElementArrayFinder, $$, browser } from 'protractor';
 
 export class ProductListPage{
-  private addToCarButton : ElementFinder;
+
+  private products: ElementArrayFinder;
 
   constructor () {
-    this.addToCarButton = $('#center_column a[title="Add to cart"]');
+    this.products = $$('.product-container');
   }
 
-  public async goToCardButton(): Promise<void> {
-    await this.addToCarButton.click();
+  public findProductByName(productName): ElementFinder  {
+    return this.products.filter((element: ElementFinder) => element
+          .$('.product-name').getText().then(text => text.includes(productName))
+      ).first();
+  }
+  public async selectProduct(productName): Promise<void> {
+    const product = this.findProductByName(productName);
+    await browser.actions().mouseMove(product.$('.product-image-container')).perform();
+    await product.$('.ajax_add_to_cart_button').click();
   }
 
 }
